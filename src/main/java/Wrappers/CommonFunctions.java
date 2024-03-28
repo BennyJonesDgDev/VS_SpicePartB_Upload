@@ -67,6 +67,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -104,6 +105,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -116,7 +118,7 @@ import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
 @SuppressWarnings("deprecation")
 public class CommonFunctions {
 	final static Logger logger = Logger.getLogger(CommonFunctions.class.getName());
-//	private static final ObjectMapper mapper = new ObjectMapper();
+	
 	public WebDriver driver;
 	public ArrayList<String> ManualActionsMessage = new ArrayList<String>();
 	private ThreadLocal<UnexpectedAlertBehaviour> alertCapability = ThreadLocal
@@ -1267,7 +1269,7 @@ public class CommonFunctions {
 		}
 	}
 
-	public boolean isElementPresent1(By by) {
+	public boolean isElementPresent1(WebDriver driver,By by) {
 		driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
 		try {
 			driver.findElement(by);
@@ -1278,522 +1280,18 @@ public class CommonFunctions {
 			driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 		}
 	}
-
-//	public boolean copyFiles(String sourcePath, String destPath, String fileName) throws Exception {
-//		boolean flag = false;
-//		final String destinationPath = destPath + fileName;
-//
-//		try {
-//			NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication(null, "vuser1", "user@123");
-//			SmbFile destFolderPath = new SmbFile(destPath, auth);
-//			if (!destFolderPath.exists()) { // destinationShare = a directory
-//				destFolderPath.mkdirs();
-//				logger.info("Shared directory created");
-//			}
-//			SmbFile sFile = new SmbFile(destinationPath, auth);
-//			SmbFileOutputStream smbFileOutputStream = new SmbFileOutputStream(sFile);
-//			FileInputStream fileInputStream = new FileInputStream(new File(sourcePath));
-//
-//			final byte[] buf = new byte[16 * 1024 * 1024];
-//			int len;
-//			while ((len = fileInputStream.read(buf)) > 0) {
-//				smbFileOutputStream.write(buf, 0, len);
-//			}
-//			fileInputStream.close();
-//			smbFileOutputStream.close();
-//			flag = true;
-//		} catch (SmbAuthException e) {
-//			flag = false;
-//			logger.error(e);
-//		} catch (SmbException se) {
-//			flag = false;
-//			throw new Exception(se.getMessage());
-//		}
-//		return flag;
-//	}
-//
-//	public void copyFileToSMBShare(String sourceFile, String destinationFile, String domain, String domainUsername,
-//			String domainPassword) throws Exception {
-//		Path source = Paths.get(sourceFile);
-//		if (!destinationFile.startsWith("smb:")) {
-//			destinationFile = "smb:" + destinationFile;
-//		}
-//		try {
-//			NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication(domain, domainUsername, domainPassword);
-//			SmbFile sFile = new SmbFile(destinationFile, auth);
-//			SmbFileOutputStream sfos = new SmbFileOutputStream(sFile);
-//			Files.copy(source, sfos);
-//			sfos.close();
-//		} catch (IOException e) {
-//			throw new Exception("Something went wrong copying the file " + e.getMessage());
-//		}
-//	}
-//	
-//	
-//	public static void createCopyOnLocal(String src, Map<String, String> dataMap) throws Exception {
-////	String urlToBackUpFile = "smb://ip/backup$/test.txt"; 
-//	NtlmPasswordAuthentication authentication = new NtlmPasswordAuthentication(null, "vuser1", "user@123");
-//      SmbFile dir = new SmbFile(src, authentication);
-//      System.out.println(dir.getDate());
-//      SmbFile destination = new SmbFile ("C:/SPICE_LLP/LLP_Agreement.pdf",authentication);
-//      dir.copyTo(destination);
-//	}
-//
-//	public static boolean createCopyOnNetwork(String src, String dest, Map<String, String> dataMap) throws Exception {
-//		FileInputStream in = null;
-//		SmbFileOutputStream out = null;
-//		// BufferedInputStream inBuf = null;
-//		try {
-//			// jcifs.Config.setProperty("jcifs.smb.client.disablePlainTextPasswords","true");
-//			NtlmPasswordAuthentication authentication = new NtlmPasswordAuthentication(null, "vuser1", "user@123"); // replace
-//																													// with
-//																													// actual
-//																													// values
-//			SmbFile file = new SmbFile(dest, authentication); // note the different format
-//			in = new FileInputStream(src);
-//			// inBuf = new BufferedInputStream(new FileInputStream(src));
-//			out = (SmbFileOutputStream) file.getOutputStream();
-//			byte[] buf = new byte[5242880];
-//			int len;
-//			while ((len = in.read(buf)) > 0) {
-//				out.write(buf, 0, len);
-//			}
-//		} catch (Exception ex) {
-//			throw ex;
-//		} finally {
-//			try {
-//				if (in != null)
-//					in.close();
-//				if (out != null)
-//					out.close();
-//			} catch (Exception ex) {
-//			}
-//		}
-//		System.out.print("\n File copied to destination");
-//		return true;
-//	}
-
-//	public String getFileName(String downloadPath, String fileName) throws Exception {
-//		String uploadFileName = fileName;
-//		SmbFile dir = null;
-//		try {
-//			NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication(null, "vuser1", "user@123");
-//
-//			dir = new SmbFile(downloadPath, auth);
-//			for (SmbFile f : dir.listFiles()) {
-//				if (f.getName().contains(fileName))
-//					uploadFileName = f.getName();
-//			}
-//		} catch (SmbAuthException e) {
-//			logger.error(e);
-//		} catch (SmbException se) {
-//			throw new Exception(se.getMessage());
-//		}
-//		return uploadFileName;
-//	}
-
-	public String getFileName_Network(String downloadPath, String fileName) throws Exception {
-		String uploadFileName = fileName;
-		File dir = null;
+	public boolean isElementPresent2(WebDriver driver,By by) {
+		driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
 		try {
-			dir = new File(downloadPath);
-			for (File f : dir.listFiles()) {
-				if (f.getName().contains(fileName))
-					uploadFileName = f.getName();
-			}
+			driver.findElement(by);
+			return true;
 		} catch (Exception e) {
-			logger.error(e);
-		}
-		return uploadFileName;
-	}
-//
-//	public ArrayList<String> getFilesList(String downloadPath) throws Exception {
-//		ArrayList<String> filesList = new ArrayList<String>();
-//		SmbFile dir = null;
-//		try {
-//			NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication(null, "vuser1", "user@123");
-//			dir = new SmbFile(downloadPath, auth);
-//
-//			for (SmbFile smbfile : dir.listFiles()) {
-//				filesList.add(smbfile.getName());
-//			}
-//		} catch (SmbAuthException e) {
-//			logger.error(e);
-//		} catch (SmbException se) {
-//			throw new Exception(se.getMessage());
-//		}
-//		return filesList;
-//	}
-
-//	public Boolean checkFileExists(String downloadPath, String fileName) throws Exception {
-//		boolean flag = false;
-//		SmbFile dir = null;
-//		try {
-//			NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication(null, "vuser1", "user@123");
-//
-//			dir = new SmbFile(downloadPath, auth);
-//			for (SmbFile f : dir.listFiles()) {
-//				if (f.getName().toLowerCase().contains(fileName.toLowerCase())) {
-//					flag = true;
-//					break;
-//				}
-//			}
-//		} catch (SmbAuthException e) {
-//			logger.error(e);
-//		} catch (SmbException se) {
-//			throw new Exception(se.getMessage());
-//		}
-//		return flag;
-//	}
-//	
-//	public void uploadFileSmb(String fileLocation, String fileName, String xpath) throws Exception {
-//		SmbFile dir = null;
-//		try {
-//			NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication(null, "vuser1", "user@123");
-//			
-//			dir = new SmbFile(fileLocation, auth);
-//			for (SmbFile f : dir.listFiles()) {
-//				if (f.getName().toLowerCase().contains(fileName.toLowerCase())) {
-//					WebElement Upload = driver.findElement(By.xpath(xpath));
-//					Upload.sendKeys(fileLocation+f.getName());
-//					break;
-//				}
-//			}
-//		} catch (SmbAuthException e) {
-//			logger.error(e);
-//		} catch (SmbException se) {
-//			throw new Exception(se.getMessage());
-//		}
-//	}
-
-	public Boolean checkFileExists_Network(String downloadPath, String fileName) throws Exception {
-		boolean flag = false;
-		File dir = null;
-		System.out.println("Path4" + downloadPath);
-		try {
-			dir = new File(downloadPath);
-			System.out.println("Path5" + downloadPath);
-			File[] directoryListing = dir.listFiles();
-			System.out.println("Dirlist files" + dir.listFiles());
-			System.out.println("DIr LISTING" + directoryListing);
-			for (File child : directoryListing) {
-				System.out.println(child);
-				if (child.getName().toLowerCase().contains(fileName.toLowerCase())) {
-					System.out.println("Child Name" + child.getName());
-					flag = true;
-					break;
-				}
-
-			}
-		} catch (Exception e) {
-			logger.error(e);
-		}
-		return flag;
-	}
-
-//	public ArrayList<String> Get_Spice_PDF(String downloadPath) throws Exception {
-//
-//		ArrayList<String> PDF = new ArrayList<String>();
-//		SmbFile dir = null;
-//		try {
-//			NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication(null, "vuser1", "user@123");
-//
-//			dir = new SmbFile(downloadPath, auth);
-//			for (SmbFile f : dir.listFiles()) {
-//				{
-//					String PDF_name = f.getName();
-//					PDF.add(PDF_name);
-//				}
-//			}
-//		} catch (SmbAuthException e) {
-//			logger.error(e);
-//		} catch (SmbException se) {
-//			throw new Exception(se.getMessage());
-//		}
-//		return PDF;
-//	}
-//
-//	public Boolean checkFileExistsInFolder(String downloadPath) throws Exception {
-//		boolean flag = false;
-//		SmbFile dir = null;
-//		try {
-//			NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication(null, "vuser1", "user@123");
-//
-//			dir = new SmbFile(downloadPath, auth);
-//			for (SmbFile f : dir.listFiles()) {
-//				if (f.length() != 0) {
-//					flag = true;
-//
-//				}
-//			}
-//		} catch (SmbAuthException e) {
-//			logger.error(e);
-//		} catch (SmbException se) {
-//			throw new Exception(se.getMessage());
-//		}
-//		return flag;
-//	}
-//
-//	public Boolean checkFileExistsInFolder_Network(String downloadPath) throws Exception {
-//		boolean flag = false;
-//		File dir = null;
-//		try {
-//			dir = new File(downloadPath);
-//			File[] directoryListing = dir.listFiles();
-//			for (File child : directoryListing) {
-//				if (child.length() != 0) {
-//					flag = true;
-//
-//				}
-//			}
-//
-//		} catch (Exception e) {
-//			logger.error(e);
-//		}
-//		return flag;
-//	}
-//
-//	public String SMB_FileName(String downloadPath) throws Exception {
-//		String FileName = null;
-//		SmbFile dir = null;
-//		try {
-//			NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication(null, "vuser1", "user@123");
-//
-//			dir = new SmbFile(downloadPath, auth);
-//			for (SmbFile f : dir.listFiles()) {
-//				if (f.exists() == true) {
-//					FileName = f.getName();
-//					break;
-//				}
-//			}
-//		} catch (SmbAuthException e) {
-//			logger.error(e);
-//		} catch (SmbException se) {
-//			throw new Exception(se.getMessage());
-//		}
-//		return FileName;
-//	}
-
-	public String Network_FileName(String downloadPath) throws Exception {
-		String FileName = null;
-		File dir = null;
-		try {
-			dir = new File(downloadPath);
-			File[] directoryListing = dir.listFiles();
-			for (File child : directoryListing) {
-				if (child.exists() == true) {
-					FileName = child.getName();
-					break;
-
-				}
-			}
-		} catch (Exception e) {
-			logger.error(e);
-		}
-		return FileName;
-	}
-//
-//	public String SMB_GetFile_NamePath(String downloadPath, String File, final Map<String, String> dataMap)
-//			throws Exception {
-//		String FileName = null;
-//		SmbFile dir = null;
-//		try {
-//			NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication(null, "vuser1", "user@123");
-//
-//			dir = new SmbFile(downloadPath, auth);
-//			for (SmbFile f : dir.listFiles()) {
-//				if (f.getName().toLowerCase().contains(File.toLowerCase())) {
-//					FileName = f.getName();
-//
-//					break;
-//				}
-//			}
-//		} catch (SmbAuthException e) {
-//			logger.error(e);
-//		} catch (SmbException se) {
-//			throw new Exception(se.getMessage());
-//		}
-//		return FileName;
-//	}
-
-	public String Network_GetFile_NamePath(String downloadPath, String File, final Map<String, String> dataMap)
-			throws Exception {
-		String FileName = null;
-		File dir = null;
-		try {
-			dir = new File(downloadPath);
-			File[] directoryListing = dir.listFiles();
-			for (File child : directoryListing) {
-				if (child.getName().toLowerCase().contains(File.toLowerCase())) {
-					FileName = child.getName();
-
-					break;
-				}
-			}
-		} catch (Exception e) {
-			logger.error(e);
-		}
-		return FileName;
-	}
-
-//	public Integer getFileNamesCount(String downloadPath, String fileName) throws Exception {
-//		int n = 0;
-//		SmbFile dir = null;
-//		try {
-//
-//			NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication(null, "vuser1", "user@123");
-//
-//			dir = new SmbFile(downloadPath, auth);
-//			for (SmbFile f : dir.listFiles()) {
-//				if (f.getName().contains(fileName)) {
-//					n = n + 1;
-//				}
-//			}
-//		} catch (SmbAuthException e) {
-//			logger.error(e);
-//		} catch (SmbException se) {
-//			throw new Exception(se.getMessage());
-//		}
-//		return n;
-//	}
-
-	public Integer getFileNamesCount_Network(String downloadPath, String fileName) throws Exception {
-		int n = 0;
-		File dir = null;
-		try {
-
-			dir = new File(downloadPath);
-			for (File child : dir.listFiles()) {
-				if (child.getName().contains(fileName)) {
-					n = n + 1;
-				}
-			}
-		} catch (Exception e) {
-			logger.error(e);
-		}
-		return n;
-	}
-
-	public Integer getFileNamesCount1(String downloadPath, String fileName) {
-		int n = 0;
-		File dir = new File(downloadPath);
-		File[] dir_contents = dir.listFiles();
-		Arrays.sort(dir_contents, LastModifiedFileComparator.LASTMODIFIED_COMPARATOR);
-		for (int i = 0; i < dir_contents.length; i++) {
-			if (dir_contents[i].getName().contains(fileName)) {
-				n = n + 1;
-			}
-		}
-		return n;
-	}
-
-	public void selectBusinessPropertyProof(final WebDriver driver, String ticketId, Map<String, String> dataMap) {
-		boolean docUploadFlag;
-		String sharedFolderPath = dataMap.get("sharedFolderPath");
-		try {
-			String businessProofType = null;
-			String file1 = null;
-			if (dataMap.get("officeBuildingType").contains("Shared")) {
-				findAndSelectValueByXpath(driver, CommonVariables.PATH_BUSINESS_PAGE_BUSINESS_PROPERTY_TYPE, "Shared");
-				businessProofType = "Legal ownership document";
-				file1 = "Rental Agreement.pdf";
-			} else if (dataMap.get("officeBuildingType").contains("Rented")) {
-				findAndSelectValueByXpath(driver, CommonVariables.PATH_BUSINESS_PAGE_BUSINESS_PROPERTY_TYPE, "Rented");
-				businessProofType = "Rent / Lease agreement";
-				file1 = "Rental Agreement.pdf";
-			} else if (dataMap.get("officeBuildingType").contains("Own")) {
-				findAndSelectValueByXpath(driver, CommonVariables.PATH_BUSINESS_PAGE_BUSINESS_PROPERTY_TYPE, "Own");
-				businessProofType = "Legal ownership document";
-				file1 = "Sale Deed.pdf";
-			}
-//			do {
-//				docUploadFlag = false;
-//				if(checkFileExists(sharedFolderPath,file1)==true){
-//					selectFileUploadType(driver, businessProofType,  CommonVariables.PATH_BUSINESS_PAGE_BUSINESS_PROPERTY_TYPE_PROOF, dataMap);
-//					fileUpload(driver,CommonVariables.PATH_BUSINESS_PAGE_BUSINESS_PROPERTY_TYPE_PROOF_UPLOAD ,ticketId,file1, dataMap);
-//					if((isElementPresent(driver, By.xpath(CommonVariables.PATH_FILE_UPLOAD_ERROR))==true) ||(isElementPresent(driver, By.xpath(CommonVariables.PATH_FILE_UPLOAD_SIZE_ERROR))==true)  || (isElementPresent(driver, By.xpath(CommonVariables.BTN_CANCEL_UPLOAD ))==true)) {
-//						docUploadFlag = false;	
-//					} else {
-//						docUploadFlag = true;
-//					}
-//				} else {
-//					waitUntilManualActions_old(driver, "Expected document "+file1+" is not available",dataMap);
-//				}
-//
-//			}while(docUploadFlag == false);
-//			do {
-//				docUploadFlag = false;
-//				if(checkFileExists(sharedFolderPath,"NOC and Bill.pdf")==true){
-//					selectFileUploadType(driver, businessProofType,  CommonVariables.PATH_BUSINESS_PAGE_BUSINESS_PROPERTY_TYPE_PROOF, dataMap);
-//					fileUpload(driver,CommonVariables.PATH_BUSINESS_PAGE_BUSINESS_PROPERTY_TYPE_PROOF_UPLOAD ,ticketId,"NOC and Bill.pdf", dataMap);
-//					if((isElementPresent(driver, By.xpath(CommonVariables.PATH_FILE_UPLOAD_ERROR))==true) ||(isElementPresent(driver, By.xpath(CommonVariables.PATH_FILE_UPLOAD_SIZE_ERROR))==true)  || (isElementPresent(driver, By.xpath(CommonVariables.BTN_CANCEL_UPLOAD ))==true)) {
-//						docUploadFlag = false;	
-//					} else {
-//						docUploadFlag = true;
-//					}
-//				} else {
-//					waitUntilManualActions_old(driver, "Expected document NOC and Bill.pdf is not available",dataMap);
-//				}
-//			}while(docUploadFlag == false);
-
-		} catch (Exception e) {
-			// logger.error(e);
+			return false;
+		} finally {
+			driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
 		}
 	}
-
-	public String getDate(String dateForma) {
-		Date date = Calendar.getInstance().getTime();
-		// Display a date in day, month, year format
-		DateFormat formatter = new SimpleDateFormat(dateForma);
-		String today = formatter.format(date);
-		return today;
-	}
-
-//	public String getpersonPhotoName(String filePath, String persName) throws Exception {
-//		String[] personName = persName.split(" ");
-//		String personPhotoName = personName[0];
-//		try {
-//
-//			int i = getFileNamesCount(filePath, personPhotoName);
-//			if (i == 1) {
-//				personPhotoName = getFileName(filePath, personPhotoName);
-//			} else if (i == 2) {
-//				personPhotoName = personName[0] + " " + personName[1];
-//				i = getFileNamesCount(filePath, personPhotoName);
-//				personPhotoName = getFileName(filePath, personPhotoName);
-//			} else if (i == 0) {
-//				personPhotoName = persName;
-//			}
-//		} catch (SmbAuthException e) {
-//			logger.error(e);
-//		} catch (SmbException se) {
-//			throw new Exception(se.getMessage());
-//		}
-//		return personPhotoName;
-//	}
-
-//	public String getpersonPhotoName_Network(String filePath, String persName) throws Exception {
-//		String[] personName = persName.split(" ");
-//		String personPhotoName = personName[0];
-//		try {
-//
-//			int i = getFileNamesCount_Network(filePath, personPhotoName);
-//			if (i == 1) {
-//				personPhotoName = getFileName_Network(filePath, personPhotoName);
-//			} else if (i == 2) {
-//				personPhotoName = personName[0] + " " + personName[1];
-//				i = getFileNamesCount_Network(filePath, personPhotoName);
-//				personPhotoName = getFileName_Network(filePath, personPhotoName);
-//			} else if (i == 0) {
-//				personPhotoName = persName;
-//			}
-//		} catch (SmbAuthException e) {
-//			logger.error(e);
-//		} catch (SmbException se) {
-//			throw new Exception(se.getMessage());
-//		}
-//		return personPhotoName;
-//	}
+	
 
 	public boolean checkAllRetrievedValuesIsNotNull(Map<String, String> dataMap) {
 		boolean flag = true;
@@ -3322,52 +2820,36 @@ public class CommonFunctions {
 			}
 		return flag;
 	}
-//
-//	public void createSharedFolder(String ticketId, String folderPath) throws Exception {
-//		NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication(null, "vuser1", "user@123");
-//		SmbFile destFolderPath = new SmbFile(folderPath, auth);
-//		if (!destFolderPath.exists()) { // destinationShare = a directory
-//			destFolderPath.mkdirs();
-//			logger.info("For ticket #: " + ticketId + ", Folder for certificate has been created successfully");
-//		}
-//	}
-//
-//	public void createSharedFolderSpice(String ticketId, String folderPath) throws Exception {
-//		NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication(null, "vuser1", "user@123");
-//		SmbFile destFolderPath = new SmbFile(folderPath, auth);
-//		if (!destFolderPath.exists()) { // destinationShare = a directory
-//			destFolderPath.mkdirs();
-//			logger.info("For ticket #: " + ticketId + ", Folder for Filled PDF has been created successfully");
-//		}
-//	}
-//
-//	public void checkEitherElementPresence(final WebDriver driver, By either, By or) {
-//		WebDriverWait wait = new WebDriverWait(driver, CommonVariables.WAIT_SECONDS);
-//		try {
-//			ExpectedCondition<Boolean> elementIsDisplayed = new ExpectedCondition<Boolean>() {
-//				public Boolean apply(WebDriver arg0) {
-//					try {
-//						WebElement thisElement = driver.findElement(either);
-//						WebElement thatElement = driver.findElement(or);
-//						if (thisElement.isDisplayed() || thatElement.isDisplayed()) {
-//							return true;
-//						} else {
-//							return false;
-//						}
-//					} catch (NoSuchElementException e) {
-//						return false;
-//					} catch (StaleElementReferenceException f) {
-//						return false;
-//					}
-//				}
-//			};
-//			wait.until(elementIsDisplayed);
-//		} catch (Exception e) {
-//			// Ignore the timeout exception
-//		} finally {
-//			// driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-//		}
-//	}
+
+	
+
+	public void checkEitherElementPresence(final WebDriver driver, By either, By or) {
+		WebDriverWait wait = new WebDriverWait(driver, CommonVariables.WAIT_SECONDS);
+		try {
+			ExpectedCondition<Boolean> elementIsDisplayed = new ExpectedCondition<Boolean>() {
+				public Boolean apply(WebDriver arg0) {
+					try {
+						WebElement thisElement = driver.findElement(either);
+						WebElement thatElement = driver.findElement(or);
+						if (thisElement.isDisplayed() || thatElement.isDisplayed()) {
+							return true;
+						} else {
+							return false;
+						}
+					} catch (NoSuchElementException e) {
+						return false;
+					} catch (StaleElementReferenceException f) {
+						return false;
+					}
+				}
+			};
+			wait.until(elementIsDisplayed);
+		} catch (Exception e) {
+			// Ignore the timeout exception
+		} finally {
+			// driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+		}
+	}
 
 	/**
 	 * ********************* Received mails checks **************

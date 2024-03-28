@@ -14,10 +14,12 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
 import org.bson.Document;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -44,16 +46,13 @@ import ru.yandex.qatools.ashot.AShot;
 import ru.yandex.qatools.ashot.Screenshot;
 import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
 
-public class spicePartB_PaymentDetails {
-	static String project_path = System.getProperty("user. dir");
-	static CommonFunctions commonFunctions = new CommonFunctions();
-//	public static Logger logger = Logger.getLogger(SpicePart_A.class);
-	static String sharedFolderName = "Spice_Part_B_Upload";
-	static String NetworkPath = "/network_folder/" + sharedFolderName + "/";
-	public static List<String> windowStrings;
+public class spicePartB_UploadDetails {
 
-	public static void loginForOtherServices(WebDriver driver, String ticketId,
-			WebDriverWait wait, String username, String password) throws Exception {
+	static CommonFunctions commonFunctions = new CommonFunctions();
+
+
+	public static void loginForOtherServices(WebDriver driver, String ticketId, WebDriverWait wait, String username,
+			String password) throws Exception {
 		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[contains(text(),'Sign In/Sign Up')]")))
 				.click();
 
@@ -68,64 +67,6 @@ public class spicePartB_PaymentDetails {
 				.click();
 
 	}
-
-//		public static void loginForOtherServices(WebDriver driver, String ticketId, Map<String, String> dataMap,
-//				WebDriverWait wait, String username, String password) throws Exception {
-//			for (int i = 0; i < 10; i++) {
-//				
-//				wait.until(
-//						ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath("//input[@id='userName']"))));
-//				driver.findElement(By.xpath("//input[@id='guideContainer-rootPanel-panel_1846244155-guidetextbox___widget']")).sendKeys(username);
-//				wait.until(
-//						ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath("//input[@id='userName']"))));
-//				driver.findElement(By.xpath("//input[@id='guideContainer-rootPanel-panel_1846244155-guidetextbox___widget']")).sendKeys(username);
-//				driver.findElement(By.xpath("//input[@id='guideContainer-rootPanel-panel_1846244155-guidepasswordbox___widget']")).sendKeys(password);
-//				WebElement captcha = driver.findElement(By.xpath("//img[@id='captcha']"));
-//				commonFunctions.clickElementByJS(driver, "//a[@id='captchaRefresh']");
-//				Thread.sleep(2000);
-//				String filepath = Utilities.webElementScreenshotnew(driver, captcha);
-//				String base64 = Utilities.convertImageToBase64String(filepath);
-//				System.out.println(base64);
-//				String vsCapctha[] = Utilities.getCaptchaUsingVSCaptcha(base64,
-//						"https://helpdesk.vakilsearch.com/ml-ad/captcha/mca", "s7wb28pAoEuTk9DfIcSnZr3G65HjRiFq");
-//				
-//				driver.findElement(By.xpath("//input[@name='userEnteredCaptcha']")).sendKeys(vsCapctha[0].toString());
-//				driver.findElement(By.xpath("//input[@id='login_0']")).click();
-//				Thread.sleep(2000);
-//				boolean INVALID_CAPTCHA_ALERT = commonFunctions.isElementPresent(driver,
-//						By.xpath(CommonVariables.PATH_MCA_HOME_INVALID_CAPTCHA_ALERT));
-//				boolean ALREADY_LOGIN_ALERT = commonFunctions.isElementPresent(driver,
-//						By.xpath(CommonVariables.PATH_MCA_HOME_ALREADY_LOGIN_ALERT));
-//				boolean INVALID_CREDENTIALS_ALERT = commonFunctions.isElementPresent(driver,
-//						By.xpath(CommonVariables.PATH_MCA_HOME_INVALID_CREDENTIALS_ALERT));
-//				boolean myWorkspace = commonFunctions.isElementPresent(driver, By.xpath("//h1[text()='My WorkSpace']"));
-//				if (ALREADY_LOGIN_ALERT == true) {
-//					sendStatusToGroup(ticketId + "_The user is already signed in another browser");
-//					break;
-//				} else {
-//					System.out.println("Already Signed in alert is not thrown");
-//				}
-//				if (INVALID_CREDENTIALS_ALERT == true) {
-//					sendStatusToGroup(ticketId + "_username and password is incorrect");
-//					break;
-//				} else {
-//					System.out.println("invalid credentials alert is not thrown");
-//				}
-//				if (INVALID_CAPTCHA_ALERT == true) {
-//					System.out.println("Captcha is wrong, Trying again");
-//					Thread.sleep(2000);
-//					driver.findElement(By.xpath("(//p[@class='error']/parent::div/a)[1]")).click();
-////					Utilities.sendFailedCaptchaToMlTeam(base64, "https://www.mca.gov.in/MinistryV2/spicefaq.html",
-////							vsCapctha[0].toString(), "SPICE");
-//				} else {
-//					if (myWorkspace == true) {
-//						System.out.println("User has been sucessfully logged in ");
-//						break;
-//					}
-//				}
-//			}
-	//
-//		}
 	public static void sendSucessResponseToCRM1(String ticketId, String username, String moaExpense,
 			String stampDutyExpense, String Spice_Moa_DocumentSubmitted_Receipt_base64,
 			String Spice_Moa_Payment_Receipt_base64, String Spice_Stamp_Duty_Payment_Receipt_base64, String password) {
@@ -230,98 +171,7 @@ public class spicePartB_PaymentDetails {
 
 	}
 
-	public static String internetBanking(WebDriver driver, WebDriverWait wait) throws Exception {
-		driver.findElement(By.xpath("//input[@value='Online Internet Banking']")).click();
-		selectByVisibleText("//select[@name='internetBankingData']", "HDFC Bank", driver);
-		commonFunctions.clickByxpath(driver, "//*[@id=\"submitBtn\"]");
-		Thread.sleep(3000);
-		commonFunctions.clickByxpath(driver, "//*[@id=\"acceptBtn\"]");
-		Thread.sleep(2000);
-		String HomeWindow = driver.getWindowHandle();
-		for (String winHandle : driver.getWindowHandles()) {
-			System.out.println("The first time" + driver.getWindowHandles().toString());
-			driver.switchTo().window(winHandle);
-		}
-		driver.manage().window().maximize();
-		wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//frame[@name='bottom_frame']"))));
-		driver.switchTo().frame(driver.findElement(By.xpath("//frame[@name='bottom_frame']")));
-		Thread.sleep(2000);
-		driver.findElement(By.xpath("//input[@name='fldLoginUserId']")).sendKeys("69648759");
-		driver.findElement(By.xpath("//a[text()='CONTINUE']")).click();
-		Thread.sleep(2000);
-		driver.switchTo().defaultContent();
-		driver.switchTo().frame(driver.findElement(By.xpath("//frame[@name='bottom_frame']")));
-		driver.findElement(By.xpath("//input[@name='fldPassword']")).sendKeys("Uber9@2022");
-		driver.findElement(By.xpath("//a[text()='LOGIN']")).click();
-		driver.switchTo().defaultContent();
-		Thread.sleep(2000);
-		selectByValue("//select[@name='selAcct']", "50200019461490  ", driver);
-		Thread.sleep(2000);
-		driver.findElement(By.xpath("//img[@alt='Continue']")).click();
-		String isOtpAutoFetch = Utilities.checkWetherAutoOtpFetch();
-		if (isOtpAutoFetch.equals("true")) {
-			Thread.sleep(35000);
-			String otp = fetchOtp();
-			driver.findElement(By.xpath("//input[@name='fldOtpToken']")).sendKeys(otp);
-			Thread.sleep(2000);
-			driver.findElement(By.xpath("//img[@alt='Submit']")).click();
-		} else {
-			Thread.sleep(20000);
-			driver.findElement(By.xpath("//img[@alt='Submit']")).click();
-		}
-		try {
-			Thread.sleep(2000);
-			driver.switchTo().alert().accept();
-		} catch (Exception e) {
-			System.out.println("No Popup displayed");
-		}
-		return HomeWindow;
-
-	}
-
-	public static Set<String> internetBanking2(WebDriver driver, WebDriverWait wait) throws Exception {
-		Set<String> windowHandles = driver.getWindowHandles();
-		System.out.println("The secound time" + windowHandles.toString());
-		windowStrings = new ArrayList<>(windowHandles);
-		String reqWindow = windowStrings.get(2);
-		driver.switchTo().window(reqWindow);
-		driver.manage().window().maximize();
-		wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//frame[@name='bottom_frame']"))));
-		driver.switchTo().frame(driver.findElement(By.xpath("//frame[@name='bottom_frame']")));
-		Thread.sleep(2000);
-		driver.findElement(By.xpath("//input[@name='fldLoginUserId']")).sendKeys("69648759");
-		driver.findElement(By.xpath("//a[text()='CONTINUE']")).click();
-		Thread.sleep(2000);
-		driver.switchTo().defaultContent();
-		driver.switchTo().frame(driver.findElement(By.xpath("//frame[@name='bottom_frame']")));
-		driver.findElement(By.xpath("//input[@name='fldPassword']")).sendKeys("Uber9@2022");
-		driver.findElement(By.xpath("//a[text()='LOGIN']")).click();
-		driver.switchTo().defaultContent();
-		Thread.sleep(2000);
-		selectByValue("//select[@name='selAcct']", "50200019461490  ", driver);
-		Thread.sleep(2000);
-		driver.findElement(By.xpath("//img[@alt='Continue']")).click();
-		String isOtpAutoFetch = Utilities.checkWetherAutoOtpFetch();
-		if (isOtpAutoFetch.equals("true")) {
-			Thread.sleep(35000);
-			String otp = fetchOtp();
-			driver.findElement(By.xpath("//input[@name='fldOtpToken']")).sendKeys(otp);
-			Thread.sleep(2000);
-			driver.findElement(By.xpath("//img[@alt='Submit']")).click();
-		} else {
-			Thread.sleep(20000);
-			driver.findElement(By.xpath("//img[@alt='Submit']")).click();
-		}
-		try {
-			Thread.sleep(2000);
-			driver.switchTo().alert().accept();
-		} catch (Exception e) {
-			System.out.println("No Popup displayed");
-		}
-		return windowHandles;
-
-	}
-
+	
 	public static void selectByVisibleText(String XPATH, String text, WebDriver driver) throws InterruptedException {
 		WebElement Dropdown = driver.findElement(By.xpath(XPATH));
 		final String Value = text;
@@ -384,13 +234,12 @@ public class spicePartB_PaymentDetails {
 			try {
 				commonFunctions.clickElementByJS(driver, "((//td[contains(text(),'" + companyName.toUpperCase()
 						+ "')])[2]/parent::tr/child::td)[12]/child::div/child::button/child::a[contains(text(),'Mini dashboard')]");
-				
+
 				System.out.println("Clicked");
 			} catch (Exception e) {
-				wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(text(),'Pending for Action')]")));
 				commonFunctions.clickElementByJS(driver, "//button[contains(text(),'Pending for Action')]");
 				spinner(driver, wait);
-				
+
 				commonFunctions.clickElementByJS(driver, "((//td[contains(text(),'" + companyName.toUpperCase()
 						+ "')])[2]/parent::tr/child::td)[12]/child::div/child::button/child::a[contains(text(),'Mini dashboard')]");
 
@@ -399,7 +248,7 @@ public class spicePartB_PaymentDetails {
 	}
 
 	private static void spicePartBUpload(WebDriver driver, WebDriverWait wait, String srnNumber, String companyName,
-			String ticketId, String username, String password, Map<String, String> dataMap) throws Exception {
+			String ticketId, String username, String password, String SPICE_Part_B_Upload_File) throws Exception {
 
 		Robot robot = new Robot();
 		Thread.sleep(4500);
@@ -415,26 +264,26 @@ public class spicePartB_PaymentDetails {
 			commonFunctions.clickElementByJS(driver,
 					"//span[contains(text(),'SPICE + Part B')]/parent::td/following-sibling::td/button[contains(text(),'Upload PDF')]");
 
-			documentUpload(driver, wait, dataMap);
+			documentUpload(driver, wait, SPICE_Part_B_Upload_File);
 
-			wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(
-					"(//label[contains(text(),'Upload the DSC affixed pdf document')]/parent::div/parent::div/parent::div/parent::div/following-sibling::div)[2]/child::div/child::div/child::p/child::b")));
-			System.out.println("document uploaded");
-			WebElement currentUploadStatus = driver.findElement(By.xpath(
-					"(//label[contains(text(),'Upload the DSC affixed pdf document')]/parent::div/parent::div/parent::div/parent::div/following-sibling::div)[2]/child::div/child::div/child::p/child::b"));
-			String currentUploadStatus1 = currentUploadStatus.getText();
 			boolean elementPresent = commonFunctions.isElementPresent(driver,
 					By.xpath("//span(contains(text(),'Ok')]"));
 			if (elementPresent == true) {
 				commonFunctions.clickElementByJS(driver, "//span(contains(text(),'Ok')]");
 			}
+			wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(
+					"(//label[contains(text(),'Upload the DSC affixed pdf document')]/parent::div/parent::div/parent::div/parent::div/following-sibling::div)[2]/child::div/child::div/child::p/child::b")));
+			WebElement currentUploadStatus = driver.findElement(By.xpath(
+					"(//label[contains(text(),'Upload the DSC affixed pdf document')]/parent::div/parent::div/parent::div/parent::div/following-sibling::div)[2]/child::div/child::div/child::p/child::b"));
+			String currentUploadStatus1 = currentUploadStatus.getText();
+
 			String uploadstatus = "The document has been successfully uploaded";
 			System.out.println(currentUploadStatus1);
 			System.out.println(uploadstatus);
-			Thread.sleep(3000);
+			Thread.sleep(4000);
 			boolean contains = currentUploadStatus1.contains(uploadstatus);
 			System.out.println(contains);
-			if (currentUploadStatus1.contains(uploadstatus) == true) {
+			if (contains == true) {
 				System.out.println("Success if");
 				driver.close();
 
@@ -447,7 +296,7 @@ public class spicePartB_PaymentDetails {
 				robot.keyRelease(KeyEvent.VK_R);
 				robot.keyRelease(KeyEvent.VK_SHIFT);
 				robot.keyRelease(KeyEvent.VK_CONTROL);
-				documentUpload(driver, wait, dataMap);
+				documentUpload(driver, wait, SPICE_Part_B_Upload_File);
 
 				wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(
 						"(//label[contains(text(),'Upload the DSC affixed pdf document')]/parent::div/parent::div/parent::div/parent::div/following-sibling::div)[2]/child::div/child::div/child::p/child::b")));
@@ -474,14 +323,14 @@ public class spicePartB_PaymentDetails {
 
 	}
 
-	private static void documentUpload(WebDriver driver, WebDriverWait wait, Map<String, String> dataMap)
+	private static void documentUpload(WebDriver driver, WebDriverWait wait, String SPICE_Part_B_Upload_File)
 			throws InterruptedException, AWTException {
 
 		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("(//button[@aria-label='OK'])[3]")));
 		driver.findElement(By.xpath("(//button[@aria-label='OK'])[3]")).click();
 		driver.findElement(By.xpath("//button[@aria-label='Upload the DSC affixed pdf document']")).click();
 		Thread.sleep(3000);
-		String sendkeyLocation1 = dataMap.get("SPICE_Part_B_Upload_File");
+		String sendkeyLocation1 = SPICE_Part_B_Upload_File;
 		uploadFileWithRobot1(sendkeyLocation1);
 		Thread.sleep(3000);
 
@@ -493,8 +342,8 @@ public class spicePartB_PaymentDetails {
 	}
 
 	private static void AGILE_PRO_Upload(WebDriver driver, WebDriverWait wait, String srnNumber, String companyName,
-			String ticketId, String username, String password, Map<String, String> dataMap) throws Exception {
-		// TODO Auto-generated method stub
+			String ticketId, String username, String password, String AGILE_PRO_Upload_File) throws Exception {
+	
 		try {
 			Thread.sleep(4500);
 			Robot robot = new Robot();
@@ -507,15 +356,14 @@ public class spicePartB_PaymentDetails {
 			wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
 					"//div[@class='guideFieldWidget afFileUpload fileUpload']/child::button[contains(text(),'Choose file')]")))
 					.click();
-//			driver.findElement(By.xpath("//div[@class='guideFieldWidget afFileUpload fileUpload']/child::button[contains(text(),'Choose file')]")).click();
+
 			Actions action = new Actions(driver);
 			WebElement findElement = driver.findElement(By.xpath(
 					"//div[@class='guideFieldWidget afFileUpload fileUpload']/child::button[contains(text(),'Choose file')]"));
 			action.moveToElement(findElement).click().perform();
-			// commonFunctions.clickElementByJS(driver, "//div[@class='guideFieldWidget
-			// afFileUpload fileUpload']/child::button[contains(text(),'Choose file')]");
+
 			Thread.sleep(3000);
-			String sendkeyLocation = dataMap.get("AGILE_PRO_Upload_File");
+			String sendkeyLocation = AGILE_PRO_Upload_File;
 			uploadFileWithRobot1(sendkeyLocation);
 			spinner(driver, wait);
 			Thread.sleep(3000);
@@ -546,15 +394,14 @@ public class spicePartB_PaymentDetails {
 				wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
 						"//div[@class='guideFieldWidget afFileUpload fileUpload']/child::button[contains(text(),'Choose file')]")))
 						.click();
-//				driver.findElement(By.xpath("//div[@class='guideFieldWidget afFileUpload fileUpload']/child::button[contains(text(),'Choose file')]")).click();
+
 
 				WebElement findElement1 = driver.findElement(By.xpath(
 						"//div[@class='guideFieldWidget afFileUpload fileUpload']/child::button[contains(text(),'Choose file')]"));
 				action.moveToElement(findElement1).click().perform();
-				// commonFunctions.clickElementByJS(driver, "//div[@class='guideFieldWidget
-				// afFileUpload fileUpload']/child::button[contains(text(),'Choose file')]");
+			
 				Thread.sleep(3000);
-				String sendkeyLocation1 = dataMap.get("AGILE_PRO_Upload_File");
+				String sendkeyLocation1 = AGILE_PRO_Upload_File;
 				uploadFileWithRobot1(sendkeyLocation1);
 				Thread.sleep(3000);
 
@@ -584,7 +431,7 @@ public class spicePartB_PaymentDetails {
 	}
 
 	private static void INC_34_Upload(WebDriver driver, WebDriverWait wait, String srnNumber, String companyName,
-			String ticketId, String username, String password, Map<String, String> dataMap) throws Exception {
+			String ticketId, String username, String password, String INC_34_Upload_File) throws Exception {
 		try {// TODO Auto-generated method stub
 			Thread.sleep(4500);
 
@@ -602,10 +449,8 @@ public class spicePartB_PaymentDetails {
 			Thread.sleep(4000);
 			driver.findElement(By.xpath("//input[@accept='pdf']/parent::div/button")).click();
 
-//			     Actions action = new Actions(driver);
-//			     WebElement findElement = driver.findElement(By.xpath("//div[@class='guideFieldWidget afFileUpload fileUpload']/child::button[contains(text(),'Choose file')]"));
-//			     action.moveToElement(findElement).click().perform();		
-			String sendkeyLocation = dataMap.get("INC_34_Upload_File");
+	
+			String sendkeyLocation = INC_34_Upload_File;
 			uploadFileWithRobot1(sendkeyLocation);
 			spinner(driver, wait);
 			Thread.sleep(3000);
@@ -637,10 +482,10 @@ public class spicePartB_PaymentDetails {
 				Thread.sleep(4000);
 				driver.findElement(By.xpath("//input[@accept='pdf']/parent::div/button")).click();
 
-//				     Actions action = new Actions(driver);
-//				     WebElement findElement = driver.findElement(By.xpath("//div[@class='guideFieldWidget afFileUpload fileUpload']/child::button[contains(text(),'Choose file')]"));
-//				     action.moveToElement(findElement).click().perform();		
-				String sendkeyLocation2 = dataMap.get("INC_34_Upload_File");
+//			     Actions action = new Actions(driver);
+//			     WebElement findElement = driver.findElement(By.xpath("//div[@class='guideFieldWidget afFileUpload fileUpload']/child::button[contains(text(),'Choose file')]"));
+//			     action.moveToElement(findElement).click().perform();		
+				String sendkeyLocation2 = INC_34_Upload_File;
 				uploadFileWithRobot1(sendkeyLocation2);
 				Thread.sleep(3000);
 
@@ -670,7 +515,7 @@ public class spicePartB_PaymentDetails {
 	}
 
 	private static void INC_33_Upload(WebDriver driver, WebDriverWait wait, String srnNumber, String companyName,
-			String ticketId, String username, String password, Map<String, String> dataMap) throws Exception {
+			String ticketId, String username, String password, String INC_33_Upload_File) throws Exception {
 		try {// TODO Auto-generated method stub
 			Thread.sleep(4500);
 			Thread.sleep(4500);
@@ -682,12 +527,12 @@ public class spicePartB_PaymentDetails {
 					"//span[contains(text(),'INC-33')]/parent::td/following-sibling::td/button[contains(text(),'Upload PDF')]")));
 			commonFunctions.clickElementByJS(driver,
 					"//span[contains(text(),'INC-33')]/parent::td/following-sibling::td/button[contains(text(),'Upload PDF')]");
-//			wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
-//					"//span[contains(text(),'INC-33')]/parent::td/following-sibling::td/button[contains(text(),'Upload PDF')]")));
-//			
-//			driver.findElement(By.xpath(
-//					"//span[contains(text(),'INC-33')]/parent::td/following-sibling::td/button[contains(text(),'Upload PDF')]"))
-//					.click();
+//		wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
+//				"//span[contains(text(),'INC-33')]/parent::td/following-sibling::td/button[contains(text(),'Upload PDF')]")));
+//		
+//		driver.findElement(By.xpath(
+//				"//span[contains(text(),'INC-33')]/parent::td/following-sibling::td/button[contains(text(),'Upload PDF')]"))
+//				.click();
 			Thread.sleep(2000);
 			wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
 					"//div[@class='guideFieldWidget afFileUpload fileUpload']/child::button[contains(text(),'Choose file')]")));
@@ -695,7 +540,7 @@ public class spicePartB_PaymentDetails {
 			WebElement findElement = driver.findElement(By.xpath(
 					"//div[@class='guideFieldWidget afFileUpload fileUpload']/child::button[contains(text(),'Choose file')]"));
 			action.moveToElement(findElement).click().perform();
-			String sendkeyLocation = dataMap.get("INC_33_Upload_File");
+			String sendkeyLocation = INC_33_Upload_File;
 			uploadFileWithRobot1(sendkeyLocation);
 			spinner(driver, wait);
 			Thread.sleep(3000);
@@ -729,7 +574,7 @@ public class spicePartB_PaymentDetails {
 				WebElement findElement1 = driver.findElement(By.xpath(
 						"//div[@class='guideFieldWidget afFileUpload fileUpload']/child::button[contains(text(),'Choose file')]"));
 				action.moveToElement(findElement1).click().perform();
-				String sendkeyLocation1 = dataMap.get("INC_33_Upload_File");
+				String sendkeyLocation1 = INC_33_Upload_File;
 				uploadFileWithRobot1(sendkeyLocation1);
 				Thread.sleep(3000);
 
@@ -757,7 +602,7 @@ public class spicePartB_PaymentDetails {
 	}
 
 	private static void INC_9_Upload(WebDriver driver, WebDriverWait wait, String srnNumber, String companyName,
-			String ticketId, String username, String password, Map<String, String> dataMap) throws Exception {
+			String ticketId, String username, String password, String INC_9_Upload_File) throws Exception {
 		try { // TODO Auto-generated method stub
 			Thread.sleep(4500);
 			Robot robot = new Robot();
@@ -775,7 +620,7 @@ public class spicePartB_PaymentDetails {
 			WebElement findElement = driver.findElement(By.xpath(
 					"//div[@class='guideFieldWidget afFileUpload fileUpload']/child::button[contains(text(),'Choose file')]"));
 			action.moveToElement(findElement).click().perform();
-			String sendkeyLocation = dataMap.get("INC_9_Upload_File");
+			String sendkeyLocation = INC_9_Upload_File;
 			uploadFileWithRobot1(sendkeyLocation);
 			spinner(driver, wait);
 			Thread.sleep(3000);
@@ -810,7 +655,7 @@ public class spicePartB_PaymentDetails {
 				WebElement findElement1 = driver.findElement(By.xpath(
 						"//div[@class='guideFieldWidget afFileUpload fileUpload']/child::button[contains(text(),'Choose file')]"));
 				action.moveToElement(findElement1).click().perform();
-				String sendkeyLocation1 = dataMap.get("INC_9_Upload_File");
+				String sendkeyLocation1 = INC_9_Upload_File;
 				uploadFileWithRobot1(sendkeyLocation1);
 				Thread.sleep(3000);
 
@@ -872,12 +717,12 @@ public class spicePartB_PaymentDetails {
 		// Thread.sleep(4000);
 	}
 
-	private static void logoutandlogin(WebDriver driver, String ticketId,
+	private static void logoutandlogin(WebDriver driver, String ticketId, Map<String, String> dataMap,
 			WebDriverWait wait, String username, String password) throws Exception {
 		commonFunctions.clickElementByJS(driver, "//span[@id='sign-in-firstname']");
 		commonFunctions.clickElementByJS(driver, "//a[@class='logoutIcon removeCookies']");
 		Thread.sleep(5000);
-		loginForOtherServices(driver, ticketId,  wait, username, password);
+		loginForOtherServices(driver, ticketId, wait, username, password);
 	}
 
 	public static void uploadFileWithRobot1(String sendkeyLocation) throws InterruptedException, AWTException {
@@ -953,8 +798,8 @@ public class spicePartB_PaymentDetails {
 			String MOA_SrnNumber = driver.findElement(By.xpath(
 					"//center[contains(text(),'Your request for Spice + Form has been submitted against SRN ')]"))
 					.getText();
-//			String MOA_Reciept = fullScreenShot(driver, "MOA_Reciept");
-//			String Spice_Moa_DocumentSubmitted_Receipt_base64 = Utilities.convertImageToBase64String(MOA_Reciept);
+//		String MOA_Reciept = fullScreenShot(driver, "MOA_Reciept");
+//		String Spice_Moa_DocumentSubmitted_Receipt_base64 = Utilities.convertImageToBase64String(MOA_Reciept);
 			// ************************need to send to crm
 			System.out.println(MOA_SrnNumber);
 			Robot robot = new Robot();
@@ -1000,79 +845,7 @@ public class spicePartB_PaymentDetails {
 		}
 	}
 
-	public static ArrayList<String> directPaymentFlow(WebDriver driver, WebDriverWait wait, String srnNumber)
-			throws InterruptedException, IOException, AWTException {
-		try {
-			Thread.sleep(5000);
-			wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(text(),'Pay Fees')]")));
-
-			commonFunctions.clickElementByJS(driver, "//button[contains(text(),'Pay Fees')]");
-
-			Thread.sleep(1000);
-//			wait.until(ExpectedConditions.visibilityOfElementLocated(By
-//					.xpath("//center[contains(text(),'Your request for Spice + Form has been submitted against SRN ')]")));
-//			String UploadedSRNNumber = driver
-//					.findElement(By.xpath(
-//							"//center[contains(text(),'Your request for Spice + Form has been submitted against SRN ')]"))
-//					.getText();
-//			String MOA_Reciept = fullScreenShot(driver, "MOA_Reciept");
-//			String Spice_Moa_DocumentSubmitted_Receipt_base64 = Utilities.convertImageToBase64String(MOA_Reciept);
-//			// ************************need to send to crm
-//			System.out.println(UploadedSRNNumber);
-//			Robot robot = new Robot();
-//			Thread.sleep(2000);
-//			robot.keyPress(KeyEvent.VK_TAB);
-//			robot.keyRelease(KeyEvent.VK_TAB);
-//			robot.keyPress(KeyEvent.VK_ENTER);
-//			robot.keyRelease(KeyEvent.VK_ENTER);
-//			
-//			
-//		//	wait.until(ExpectedConditions.elementToBeClickable(By.xpath("(//button[contains(text(),'Ok')])[1]")));
-//		//	commonFunctions.clickElementByJS(driver, "(//button[contains(text(),'Ok')])[1]");
-//			//driver.findElement(By.xpath("(//button[contains(text(),'Ok')])[1]")).click();
-			String SPICEPartBTotalAmount = driver.findElement(By.xpath("(//td[@class='totalFees'])[1]")).getText();
-			String StampDutyFeeForMOAandAOA = driver.findElement(By.xpath("(//td[@class='totalFees'])[1]")).getText();
-			Utilities.scrollToElement(driver, driver.findElement(By.xpath("//button[text()='Make Payment']")));
-			Thread.sleep(2000);
-			driver.findElement(By.xpath("//button[text()='Make Payment']")).click();
-			Thread.sleep(2000);
-			navigateToBharatKosh(driver, wait);
-			hdfcNetBanking(driver);
-			String Spice_Moa_Payment_Receipt_base64 = getPrintReceipt(driver, srnNumber);
-			String moaSrn = driver.findElement(By.xpath(
-					"(//div[@class='transactionSuccess']/following-sibling::div[@class='transactionCompleteAlert']/child::span/following-sibling::span[@id='srnNumber'])[1]"))
-					.getText();
-			String moaSrnamount = driver
-					.findElement(By.xpath("(//div[@class='transactionCompleteAlert']//span[@id='charges'])[1]"))
-					.getText();
-
-			stampduty_payment(driver, wait);
-			String Spice_Stamp_Duty_Payment_Receipt_base64 = getPrintReceipt(driver, srnNumber);
-			String stampSrn = driver.findElement(By.xpath(
-					"(//div[@class='transactionSuccess']/following-sibling::div[@class='transactionCompleteAlert']/child::span/following-sibling::span[@id='srnNumber'])[1]"))
-					.getText();
-			String stampSrnamount = driver
-					.findElement(By.xpath("(//div[@class='transactionCompleteAlert']//span[@id='charges'])[1]"))
-					.getText();
-			ArrayList<String> values = new ArrayList<String>();
-
-			System.out.println(SPICEPartBTotalAmount);
-			System.out.println(StampDutyFeeForMOAandAOA);
-			System.out.println(Spice_Moa_Payment_Receipt_base64);
-			System.out.println(Spice_Stamp_Duty_Payment_Receipt_base64);
-
-			values.add(moaSrn);// moaSrnnumber
-			values.add(stampSrn);// stampSrnnumber
-			values.add(moaSrnamount);
-			values.add(Spice_Moa_Payment_Receipt_base64);
-			values.add(stampSrnamount);
-			values.add(Spice_Stamp_Duty_Payment_Receipt_base64);
-			return values;
-		} catch (Exception e) {
-
-			throw new RuntimeException("Error occurred in the fail method");
-		}
-	}
+	
 
 	public static void chooseNoOfBoxShouldBeOpenToUpload(int nos, WebDriver driver) throws InterruptedException {
 		for (int i = 1; i < nos; i++) {
@@ -1168,14 +941,6 @@ public class spicePartB_PaymentDetails {
 		return a;
 	}
 
-	public static String getPaymentReceipt(String ticketId, String srnNumber) throws IOException {
-		String path = "\\192.168.1.9\\VakilSearch\\Balaji\\" + ticketId + ".pdf";
-		Utilities.gettingPDFFromAPI(
-				"https://www.mca.gov.in/mcafoportal/displayChallanReceipt.do?srn=" + srnNumber + "&pltrReceipt=false",
-				path);
-		String Spice_Payment_Receipt_base64 = Utilities.convertImageToBase64String(path);
-		return Spice_Payment_Receipt_base64;
-	}
 
 	public static String fetchSrnNumber2(WebDriver driver, WebDriverWait wait) throws Exception {
 		driver.findElement(By.xpath("//input[@value='Online Internet Banking']")).click();
@@ -1201,18 +966,141 @@ public class spicePartB_PaymentDetails {
 		Response response = httpRequest.request(Method.POST);
 
 	}
+	public boolean isElementPresent2(WebDriver driver,By by) {
+		driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
+		try {
+			driver.findElement(by);
+			return true;
+		} catch (Exception e) {
+			return false;
+		} finally {
+			driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
+		}
+	}
 
+	public static void main(WebDriver driver, WebDriverWait wait) throws Exception {
+		MongoClient mongoClient = MongoClients
+				.create("mongodb://local_automation_user:DenTErimpOre@192.168.9.68:7750/VS_ProcessAutomation");
+		MongoDatabase vsDB = mongoClient.getDatabase("VS_ProcessAutomation");
+		MongoCollection<Document> collection = vsDB.getCollection("Spice_Part_B_Upload");
+		Document query = new Document();
+		List results = new ArrayList<>();
+		collection.find(query).into(results);
+		for (int i = 0; i < results.size(); i++) {
+			Document ticketDetails = (Document) results.get(i);
+
+			String username = ticketDetails.getString("mcaUserName");
+			String password = ticketDetails.getString("mcaPassword");
+			String ticketId = ticketDetails.getString("ticketId");
+			String srnNumber = ticketDetails.getString("srnNumber");
+			String serviceId = ticketDetails.getString("serviceId");
+			String agentEmail = ticketDetails.getString("agentEmail");
+			String companyName = ticketDetails.getString("companyName");
+			String SPICE_Part_B_Upload_File = "\\\\14.140.167.188\\Vakilsearch\\Spice_Plus\\" + ticketId
+					+ "\\SPICE_Part_B";
+			String AGILE_PRO_Upload_File = "\\\\14.140.167.188\\Vakilsearch\\Spice_Plus\\" + ticketId
+					+ "\\AGILE_PRO.pdf";
+			String INC_34_Upload_File = "\\\\14.140.167.188\\Vakilsearch\\Spice_Plus\\" + ticketId + "\\AOA.pdf";
+			String INC_33_Upload_File = "\\\\14.140.167.188\\Vakilsearch\\Spice_Plus\\" + ticketId + "\\MOA.pdf";
+			String INC_9_Upload_File = "\\\\14.140.167.188\\Vakilsearch\\Spice_Plus\\" + ticketId + "\\INC-9.pdf";
+			try {
+				driver.get("https://www.mca.gov.in");
+				loginForOtherServices(driver, ticketId, wait, username, password);
+				searchApplication(driver, wait, srnNumber, companyName, ticketId, username, password);
+				Thread.sleep(4000);
+				boolean elementPresent = commonFunctions.isElementPresent(driver, By.xpath(
+						"//span[contains(text(),'SPICE + Part B')]/parent::td/following-sibling::td/button[contains(text(),'Upload PDF')]"));
+
+
+				boolean ifUploaded = commonFunctions.isElementPresent2(driver, By.xpath(
+						"//span[contains(text(),'SPICE + Part B')]/parent::td/following-sibling::td/span[contains(text(),'PDF Uploaded')]"));
+				if (ifUploaded == false) {
+					spicePartBUpload(driver, wait, srnNumber, companyName, ticketId, username, password,
+							SPICE_Part_B_Upload_File);
+				}
+				boolean ifUploadedAGILE_PRO_Upload = commonFunctions.isElementPresent2(driver, By.xpath(
+						"//span[contains(text(),'AGILE PRO')]/parent::td/following-sibling::td/span[contains(text(),'PDF Uploaded')]"));
+				if (ifUploadedAGILE_PRO_Upload == false) {
+					AGILE_PRO_Upload(driver, wait, srnNumber, companyName, ticketId, username, password,
+							AGILE_PRO_Upload_File);
+				}
+				boolean ifUploadedINC_34_Upload = commonFunctions.isElementPresent2(driver, By.xpath(
+						"//span[contains(text(),'INC-34')]/parent::td/following-sibling::td/span[contains(text(),'PDF Uploaded')]"));
+				if (ifUploadedINC_34_Upload == false) {
+					INC_34_Upload(driver, wait, srnNumber, companyName, ticketId, username, password,
+							INC_34_Upload_File);
+				}
+				 boolean ifUploadedINC_33_Upload = commonFunctions.isElementPresent2(driver,
+				 By.xpath("//span[contains(text(),'INC-33')]/parent::td/following-sibling::td/span[contains(text(),'PDF Uploaded')]"));
+				 if (ifUploadedINC_33_Upload==false) {
+				INC_33_Upload(driver, wait, srnNumber, companyName, ticketId, username, password, INC_33_Upload_File);
+				 }
+				 boolean ifUploadedINC_9_Upload = commonFunctions.isElementPresent2(driver,
+				 By.xpath("//span[contains(text(),'INC-9')]/parent::td/following-sibling::td/span[contains(text(),'PDF Uploaded')]"));
+				 if (ifUploadedINC_9_Upload==false) {
+				INC_9_Upload(driver, wait, srnNumber, companyName, ticketId, username, password, INC_9_Upload_File);
+				}
+
+				Robot robot = new Robot();
+				ArrayList<String> tabs = new ArrayList<>(driver.getWindowHandles());
+				driver.switchTo().window(tabs.get(0));
+				robot.keyPress(KeyEvent.VK_CONTROL);
+				robot.keyPress(KeyEvent.VK_R);
+				robot.keyRelease(KeyEvent.VK_R);
+				robot.keyRelease(KeyEvent.VK_CONTROL);
+				ArrayList<String> values = signTheAgreement(driver, wait, srnNumber);
+
+				String moaSrnNumber = values.get(0);
+				String stampSrnNumber = values.get(1);
+				String moaExpense = values.get(2);
+				String stampDutyExpense = values.get(3);
+
+				String Spice_Moa_Payment_Receipt_base64 = values.get(4);
+				String Spice_Stamp_Duty_Payment_Receipt_base64 = values.get(5);
+
+
+				addNoteInCRM(ticketId, "SpicePart Upload Done", "SpicePart Upload Done", agentEmail);
+				sendStatusToGroup(ticketId + "_" + "Uploaded !!!");
+
+				Logout(driver);
+
+			} catch (Exception e) {
+
+				System.out.println("Negative response sent");
+				checkStatusAndSendNegativeResponse(driver, wait, ticketId, username, password);
+				continue;
+			}
+		}
 	
+	}
+
+	public static void addNoteInCRM(String ticketId, String content, String subject, String agentEmail) {
+		System.out.println(content);
+		System.out.println(agentEmail);
+		System.out.println(ticketId);
+		JsonObject requestParams = new JsonObject();
+		requestParams.addProperty("ticketId", ticketId);
+		requestParams.addProperty("content", content);
+		requestParams.addProperty("subject", subject);
+		requestParams.addProperty("agentEmail", agentEmail);
+		String environment = "https://helpdesk.vakilsearch.com";
+		RestAssured.baseURI = environment + "/crm_update/add_note";
+		RequestSpecification httpRequest = RestAssured.given();
+		httpRequest.header("Content-Type", "application/json");
+		httpRequest.body(requestParams.toString());
+		Response response = httpRequest.request(Method.POST);
+		System.out.println(response.statusCode());
+	}
 
 	public static void checkStatusAndSendNegativeResponse(WebDriver driver, WebDriverWait wait, String ticketId,
 			String username, String password) throws IOException, InterruptedException {
-//			String currentUploadStatus1 = driver.findElement(By.xpath(
-//					"//div[@id='guideContainer-rootPanel-panel_447355163_copy-panel_1375136083_cop-panel_1918291137-panel-guidetextdraw_copy_c__']/child::p/child::b"))
-//					.getText();
-//			String uploadstatus1 = "The document has been successfully uploaded. ";
-//			if (currentUploadStatus1.contains(uploadstatus1)) {
-//				driver.close();
-//			} else {
+//		String currentUploadStatus1 = driver.findElement(By.xpath(
+//				"//div[@id='guideContainer-rootPanel-panel_447355163_copy-panel_1375136083_cop-panel_1918291137-panel-guidetextdraw_copy_c__']/child::p/child::b"))
+//				.getText();
+//		String uploadstatus1 = "The document has been successfully uploaded. ";
+//		if (currentUploadStatus1.contains(uploadstatus1)) {
+//			driver.close();
+//		} else {
 		System.out.println("failed sent");
 		String PriliminaryFailure_Screenshot_Path = fullScreenShot(driver, "PriliminaryFailure_Screenshot");
 		String base64String = Utilities.convertImageToBase64String(PriliminaryFailure_Screenshot_Path);
@@ -1289,7 +1177,6 @@ public class spicePartB_PaymentDetails {
 			robot.keyPress(KeyEvent.VK_ENTER);
 			robot.keyRelease(KeyEvent.VK_ENTER);
 			Thread.sleep(5000);
-			wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@id='btnConfirm']")));
 			Utilities.scrollToElement(driver, driver.findElement(By.xpath("//button[@id='btnConfirm']")));
 			driver.findElement(By.xpath("//button[@id='btnConfirm']")).click();
 			Thread.sleep(5000);
@@ -1300,7 +1187,7 @@ public class spicePartB_PaymentDetails {
 			Thread.sleep(2000);
 			selectByValue("//select[@id='lstggregatorBankForInternetBanking']", "31", driver);
 			waitUntilManualActions(driver, "Please enter the captcha text");
-//			driver.findElement(By.xpath("//input[@id='BtnPay']")).click();
+//		driver.findElement(By.xpath("//input[@id='BtnPay']")).click();
 			Thread.sleep(2000);
 			driver.findElement(By.xpath("//button[text()='Confirm']")).click();
 			Thread.sleep(4000);
@@ -1327,7 +1214,7 @@ public class spicePartB_PaymentDetails {
 			Thread.sleep(2000);
 			selectByValue("//select[@id='lstggregatorBankForInternetBanking']", "31", driver);
 			waitUntilManualActions(driver, "Please enter the captcha text");
-//			driver.findElement(By.xpath("//input[@id='BtnPay']")).click();
+//		driver.findElement(By.xpath("//input[@id='BtnPay']")).click();
 			Thread.sleep(2000);
 			driver.findElement(By.xpath("//button[text()='Confirm']")).click();
 			Thread.sleep(4000);
@@ -1396,55 +1283,6 @@ public class spicePartB_PaymentDetails {
 		} catch (Exception e) {
 			System.out.println("Unable to logout");
 		}
-	}
-
-	public static void main(WebDriver driver, WebDriverWait wait)
-			throws Exception {
-		MongoClient mongoClient = MongoClients
-                .create("mongodb://local_automation_user:DenTErimpOre@192.168.9.68:7750/VS_ProcessAutomation");
-        MongoDatabase vsDB = mongoClient.getDatabase("VS_ProcessAutomation");
-        MongoCollection<Document> collection = vsDB.getCollection("Spice_Part_B_Upload");
-        Document query = new Document();
-        List results = new ArrayList<>();
-        collection.find(query).into(results);
-		for (int i = 0; i < results.size(); i++) {
-			Document ticketDetails = (Document) results.get(i);
-
-		
-			String username = ticketDetails.getString("mcaUserName");
-			String password = ticketDetails.getString("mcaPassword");
-			String ticketId = ticketDetails.getString("ticketId");
-			String srnNumber = ticketDetails.getString("srnNumber");
-			String serviceId =ticketDetails.getString("serviceId");
-			String agentEmail = ticketDetails.getString("agentEmail");
-			String companyName = ticketDetails.getString("companyName");
-		
-			try {
-				driver.get("https://www.mca.gov.in");
-				loginForOtherServices(driver, ticketId, wait, username, password);
-				searchApplication(driver, wait, srnNumber, companyName, ticketId, username, password);
-				Thread.sleep(4000);
-
-					ArrayList<String> values = directPaymentFlow(driver, wait, srnNumber);
-					String moaSrnNumber = values.get(0);
-					String stampSrnNumber = values.get(1);
-					String moaExpense = values.get(2);
-					String Spice_Moa_Payment_Receipt_base64 = values.get(3);
-					String stampDutyExpense = values.get(4);
-					String Spice_Stamp_Duty_Payment_Receipt_base64 = values.get(5);
-
-					sendSucessResponseToCRM(ticketId, username, moaSrnNumber, stampSrnNumber, moaExpense,
-					stampDutyExpense, Spice_Moa_Payment_Receipt_base64, Spice_Stamp_Duty_Payment_Receipt_base64,
-				    password);
-					sendStatusToGroup(ticketId + "_" + agentEmail + "_" + "Payment Successfull!!!");
-					Logout(driver);
-				
-			} catch (Exception e) {
-
-				System.out.println(e);
-				//checkStatusAndSendNegativeResponse(driver, wait, ticketId, username, password);
-				//continue;
-			}}
 	}
 
 }
