@@ -977,7 +977,7 @@ public class spicePartB_UploadDetails {
 		} finally {
 			driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
 		}
-	}
+	} 
 	public static void insertAutomationStatusToMongoDB(String userName,String password,String type, String ticketId, String Service,
             String automationType, String agentEmail,String companyName) {
         try {
