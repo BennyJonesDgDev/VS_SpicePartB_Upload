@@ -35,6 +35,7 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
 
 import Wrappers.CommonFunctions;
 import Wrappers.Utilities;
@@ -977,7 +978,29 @@ public class spicePartB_UploadDetails {
 			driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
 		}
 	}
-
+	public static void insertAutomationStatusToMongoDB(String userName,String password,String type, String ticketId, String Service,
+            String automationType, String agentEmail,String companyName) {
+        try {
+     
+            MongoClient mongoClient = MongoClients
+                    .create("mongodb://local_automation_user:DenTErimpOre@14.143.222.116:7750/VS_ProcessAutomation");
+            MongoDatabase vsDB = mongoClient.getDatabase("VS_ProcessAutomation");
+            MongoCollection<Document> reports = vsDB.getCollection("Spice_Part_B_Payment");
+            Document report = new Document();
+            report.append("mcaUserName", userName);
+            report.append("mcaPassword", password);
+            report.append("type", type);
+            report.append("ticketId", ticketId);
+            report.append("serviceId", Service);
+            report.append("companyName", companyName);
+            report.append("agentEmail", agentEmail);
+            reports.insertOne(report);
+      
+        }catch (Exception e) {
+            
+            
+        }
+    }
 	public static void main(WebDriver driver, WebDriverWait wait) throws Exception {
 		MongoClient mongoClient = MongoClients
 				.create("mongodb://local_automation_user:DenTErimpOre@192.168.9.68:7750/VS_ProcessAutomation");
@@ -996,6 +1019,7 @@ public class spicePartB_UploadDetails {
 			String serviceId = ticketDetails.getString("serviceId");
 			String agentEmail = ticketDetails.getString("agentEmail");
 			String companyName = ticketDetails.getString("companyName");
+			
 			String SPICE_Part_B_Upload_File = "\\\\14.140.167.188\\Vakilsearch\\Spice_Plus\\" + ticketId
 					+ "\\SPICE_Part_B";
 			String AGILE_PRO_Upload_File = "\\\\14.140.167.188\\Vakilsearch\\Spice_Plus\\" + ticketId
@@ -1061,7 +1085,9 @@ public class spicePartB_UploadDetails {
 
 				addNoteInCRM(ticketId, "SpicePart Upload Done", "SpicePart Upload Done", agentEmail);
 				sendStatusToGroup(ticketId + "_" + "Uploaded !!!");
-
+				insertAutomationStatusToMongoDB(username,password,srnNumber, ticketId, serviceId, companyName, agentEmail,companyName);
+				 collection.deleteOne(Filters.eq("ticketId", ticketId));
+		            System.out.println("Document deleted successfully...");
 				Logout(driver);
 
 			} catch (Exception e) {

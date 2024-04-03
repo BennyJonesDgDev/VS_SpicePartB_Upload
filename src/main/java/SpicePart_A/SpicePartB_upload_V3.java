@@ -71,7 +71,15 @@ package SpicePart_A;
 import java.awt.Robot;
 import java.awt.event.KeyEvent;
 import java.util.Set;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
+import java.util.ArrayList;
 
+import org.bson.Document;
+import org.bson.Document;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.edge.EdgeDriver;
@@ -100,69 +108,69 @@ public class SpicePartB_upload_V3 {
 				"https://chromewebstore.google.com/detail/requestly-intercept-modif/mdnleldcmiljblolnjhpnblkcekpdkpa");
 		WebDriverWait wait = new WebDriverWait(driver, 100);
 		driver.manage().window().maximize();
-		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[text()='Add to Chrome']"))).click();
-		Screen screen = new Screen();
-		Pattern allowPopup = new Pattern(
-				"\\\\14.140.167.188\\Vakilsearch\\Automation_Documents\\Allow_Button_Edge.png");
-		Pattern addExtension = new Pattern(
-				"\\\\14.140.167.188\\Vakilsearch\\Automation_Documents\\Add_extension_Button.png");
-		Pattern QAEngineer = new Pattern("\\\\14.140.167.188\\Vakilsearch\\Automation_Documents\\QAEngineer.png");
-		Pattern CancelRequest = new Pattern(
-				"\\\\14.140.167.188\\Vakilsearch\\Automation_Documents\\Cancel_request.png");
-		Thread.sleep(2000);
-		screen.wait(allowPopup, 20);
-		screen.click(allowPopup);
-		Thread.sleep(2000);
-		screen.wait(addExtension, 20);
-		screen.click(addExtension);
-		Thread.sleep(6000);
-		Set<String> windowHandles = driver.getWindowHandles();
-		String[] handles = windowHandles.toArray(new String[0]);
-		driver.switchTo().window(handles[1]);
-		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[text()='Skip for now ']")));
-		commonFunctions.clickElementByJS_WebElement(driver,
-				driver.findElement(By.xpath("//span[text()='Skip for now ']")));
-		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@aria-autocomplete='list']"))).click();
-		Thread.sleep(2000);
-		screen.wait(QAEngineer, 20);
-		screen.click(QAEngineer);
-		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[text()='Proceed']"))).click();
-		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[text()='Skip for now ']"))).click();
-		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[text()='Create new Rule']"))).click();
-		Thread.sleep(2000);
-		screen.wait(CancelRequest, 20);
-		screen.click(CancelRequest);
-		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[text()='Create Rule']"))).click();
-		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[@aria-label='Skip']"))).click();
-		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@placeholder='example']")));
-		driver.findElement(By.xpath("//input[@placeholder='example']"))
-				.sendKeys("https://cdn.jsdelivr.net/npm/disable-devtool");
-		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='Add a new condition']"))).click();
-		Thread.sleep(2000);
-		driver.findElement(By.xpath("(//input[@placeholder='example'])[2]"))
-				.sendKeys("https://www.mca.gov.in/etc.clientlibs/mca/clientlibs/clientlib-devtool.js");
-		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='Add a new condition']"))).click();
-		Thread.sleep(2000);
-		driver.findElement(By.xpath("(//input[@placeholder='example'])[3]"))
-				.sendKeys("https://www.mca.gov.in/content/dam/csr/icons/captcha.jpg");
-		Thread.sleep(2000);
-		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[text()='*Save rule']"))).click();
-		driver.close();
-		driver.switchTo().window(handles[0]);
-		driver.get("https://www.mca.gov.in/content/mca/global/en/foportal/fologin.html");
+//		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[text()='Add to Chrome']"))).click();
+//		Screen screen = new Screen();
+//		Pattern allowPopup = new Pattern(
+//				"\\\\14.140.167.188\\Vakilsearch\\Automation_Documents\\Allow_Button_Edge.png");
+//		Pattern addExtension = new Pattern(
+//				"\\\\14.140.167.188\\Vakilsearch\\Automation_Documents\\Add_extension_Button.png");
+//		Pattern QAEngineer = new Pattern("\\\\14.140.167.188\\Vakilsearch\\Automation_Documents\\QAEngineer.png");
+//		Pattern CancelRequest = new Pattern(
+//				"\\\\14.140.167.188\\Vakilsearch\\Automation_Documents\\Cancel_request.png");
+//		Thread.sleep(2000);
+//		screen.wait(allowPopup, 20);
+//		screen.click(allowPopup);
+//		Thread.sleep(2000);
+//		screen.wait(addExtension, 20);
+//		screen.click(addExtension);
+//		Thread.sleep(6000);
+//		Set<String> windowHandles = driver.getWindowHandles();
+//		String[] handles = windowHandles.toArray(new String[0]);
+//		driver.switchTo().window(handles[1]);
+//		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[text()='Skip for now ']")));
+//		commonFunctions.clickElementByJS_WebElement(driver,
+//				driver.findElement(By.xpath("//span[text()='Skip for now ']")));
+//		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@aria-autocomplete='list']"))).click();
+//		Thread.sleep(2000);
+//		screen.wait(QAEngineer, 20);
+//		screen.click(QAEngineer);
+//		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[text()='Proceed']"))).click();
+//		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[text()='Skip for now ']"))).click();
+//		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[text()='Create new Rule']"))).click();
+//		Thread.sleep(2000);
+//		screen.wait(CancelRequest, 20);
+//		screen.click(CancelRequest);
+//		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[text()='Create Rule']"))).click();
+//		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[@aria-label='Skip']"))).click();
+//		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@placeholder='example']")));
+//		driver.findElement(By.xpath("//input[@placeholder='example']"))
+//				.sendKeys("https://cdn.jsdelivr.net/npm/disable-devtool");
+//		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='Add a new condition']"))).click();
+//		Thread.sleep(2000);
+//		driver.findElement(By.xpath("(//input[@placeholder='example'])[2]"))
+//				.sendKeys("https://www.mca.gov.in/etc.clientlibs/mca/clientlibs/clientlib-devtool.js");
+//		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[text()='Add a new condition']"))).click();
+//		Thread.sleep(2000);
+//		driver.findElement(By.xpath("(//input[@placeholder='example'])[3]"))
+//				.sendKeys("https://www.mca.gov.in/content/dam/csr/icons/captcha.jpg");
+//		Thread.sleep(2000);
+//		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[text()='*Save rule']"))).click();
+//		driver.close();
+//		driver.switchTo().window(handles[0]);
+//		driver.get("https://www.mca.gov.in/content/mca/global/en/foportal/fologin.html");
 		try {
-			Robot robot = new Robot();
-			robot.keyPress(KeyEvent.VK_CONTROL);
-			robot.keyPress(KeyEvent.VK_MINUS);
-			robot.keyRelease(KeyEvent.VK_MINUS);
-			robot.keyPress(KeyEvent.VK_MINUS);
-			robot.keyRelease(KeyEvent.VK_MINUS);
-			robot.keyPress(KeyEvent.VK_MINUS);
-			robot.keyRelease(KeyEvent.VK_MINUS);
-			robot.keyPress(KeyEvent.VK_MINUS);
-			robot.keyRelease(KeyEvent.VK_MINUS);
-			robot.keyRelease(KeyEvent.VK_CONTROL);
-			wait = new WebDriverWait(driver, 100);
+//			Robot robot = new Robot();
+//			robot.keyPress(KeyEvent.VK_CONTROL);
+//			robot.keyPress(KeyEvent.VK_MINUS);
+//			robot.keyRelease(KeyEvent.VK_MINUS);
+//			robot.keyPress(KeyEvent.VK_MINUS);
+//			robot.keyRelease(KeyEvent.VK_MINUS);
+//			robot.keyPress(KeyEvent.VK_MINUS);
+//			robot.keyRelease(KeyEvent.VK_MINUS);
+//			robot.keyPress(KeyEvent.VK_MINUS);
+//			robot.keyRelease(KeyEvent.VK_MINUS);
+//			robot.keyRelease(KeyEvent.VK_CONTROL);
+//			wait = new WebDriverWait(driver, 100);
 
 			spicePartB_UploadDetails spice = new spicePartB_UploadDetails();
 			spice.main(driver, wait);
@@ -171,5 +179,9 @@ public class SpicePartB_upload_V3 {
 			Utilities.errorParsingLogger(ex.toString(), "Spice_Part_A");
 			ex.printStackTrace();
 		}
+		
+		
+
+        }
 	}
-}
+
